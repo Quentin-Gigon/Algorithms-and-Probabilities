@@ -1,0 +1,111 @@
+import java.util.ArrayList;
+
+class Main {
+  public static ArrayList<Integer> dfs_num;
+  public static ArrayList<Integer> low_num;
+  public static ArrayList<Boolean> is_visited;
+  public static ArrayList<Boolean> is_av;
+  public static int pre_visit = -1;
+  
+  public static void dfs(ArrayList<ArrayList<Integer>> Graph, int vertex, int ancestor) {
+    pre_visit++;
+    dfs_num.set(vertex, pre_visit);
+    low_num.set(vertex, pre_visit);
+    is_visited.set(vertex, true);
+    int children = 0; 
+    
+    //for each vertex which is neighbor of v, ...
+    for (int i = 0; i<Graph.get(vertex).size(); i++){
+      int descendant = Graph.get(vertex).get(i);
+      
+      if (!is_visited.get(descendant)) {
+        children++;
+        dfs(Graph, descendant, vertex);
+        
+        int low_val = Math.min(low_num.get(vertex), low_num.get(descendant));
+        low_num.set(vertex, low_val);
+        
+        if(ancestor!=-1 && low_num.get(descendant) >= dfs_num.get(vertex)){
+          is_av.set(vertex, true);
+        }
+        
+        if (ancestor == -1 && children > 1){
+          is_av.set(vertex, true);
+        }
+      }
+      
+      else { 
+        if (descendant != ancestor) {
+          int low_val = Math.min(low_num.get(vertex), dfs_num.get(descendant));
+          low_num.set(vertex, low_val);
+        }
+      }
+    }
+  }
+  
+      public static void testCase() {
+        // Input using In.java class
+        int n = In.readInt();
+        int m = In.readInt();
+        
+       ArrayList<ArrayList<Integer>> Graph = new ArrayList<ArrayList<Integer>>();
+        for (int i = 0; i < n; i++){
+          Graph.add(new ArrayList<Integer>());
+        }
+        
+        for (int i =0; i<m; i++){
+          int a = In.readInt();
+          int b = In.readInt();
+          
+          Graph.get(a).add(b);
+          Graph.get(b).add(a);
+        }
+        
+        
+        dfs_num = new ArrayList<Integer>(); 
+        low_num = new ArrayList<Integer>();
+        is_visited = new ArrayList<Boolean>();
+        is_av = new ArrayList<Boolean>();
+        pre_visit = -1;
+        
+        for (int i = 0; i<n; i++){
+          dfs_num.add(i , -1);
+          low_num.add(i, -1);
+          is_visited.add(i, false);
+          is_av.add(i, false);
+        }
+        
+        for (int i = 0; i<n; i++){
+          if(dfs_num.get(i) == -1){
+            dfs(Graph, i, -1);
+          }
+        }
+  
+        // Output using Out.java class
+        boolean no_av = true;
+        for (int i = 0; i < n; i++){
+          if (is_av.get(i) == true){
+            Out.print(i + " ");
+            no_av = false;
+          }
+        }
+        
+        if (no_av){
+          Out.print("-1");
+        }
+        Out.println();
+    }
+  
+    public static void main(String[] args) {
+        // Uncomment this line if you want to read from a file
+        In.open("public/test1.in");
+        
+        int t = In.readInt();
+        for (int i = 0; i < t; i++) {
+            testCase();
+        }
+        
+        // Uncomment this line if you want to read from a file
+        In.close();
+    }
+}
