@@ -1,0 +1,71 @@
+class Main {
+  static double n;
+  static double x;
+  static double pAlpha;
+  static double pAlphaRed;
+  static double pBetaRed;
+  
+    public static void main(String[] args) {
+        // Uncomment this line if you want to read from a file
+        In.open("public/custom.in");
+        
+        int t = In.readInt();
+        for (int i = 0; i < t; i++) {
+            testCase();
+        }
+        
+        // Uncomment this line if you want to read from a file
+        In.close();
+    }
+    
+    //calculate probability of getting red 
+    public static double solve1() {
+      double probRed = pAlpha*pAlphaRed+(1-pAlpha)*(pBetaRed);
+      return probRed;
+       
+    }
+    
+    //calculate probability of alpha, given result is red
+    public static double solve2() {
+      double probRed = solve1();
+      double probAlpha = (pAlpha * pAlphaRed) / probRed;
+      return probAlpha;
+       
+    }
+    
+    //probability of b occuring at least 1 times given red n times
+    public static double solve3() {
+      long probAlphaGivenRed = solve2();
+      //probAlphaGivenRed to the power of n
+      for (int i=1; i<n; i++) {
+        probAlphaGivenRed *= probAlphaGivenRed;
+      }
+     // probAlphaGivenRed = Math.pow(probAlphaGivenRed, n);
+      double probBeta = 1.0-probAlphaGivenRed;
+      return probBeta;
+    }
+
+    public static void testCase() {
+        // Input using In.java class
+        n = In.readDouble();
+        x = In.readDouble();
+        pAlpha = In.readDouble();
+        pAlphaRed = In.readDouble();
+        pBetaRed = In.readDouble();
+        
+        if (x==1){
+          Out.println(solve1());
+        }
+        if (x==2){
+          Out.println(solve2());
+        }
+        if (x==3){
+          Out.println(solve3());
+        }
+        
+        
+        
+        // Output using Out.java class
+       // Out.println(n + n);
+    }
+}
