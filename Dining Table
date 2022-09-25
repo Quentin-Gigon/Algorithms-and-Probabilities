@@ -1,0 +1,77 @@
+import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+class Main {
+    public static void main(String[] args) {
+        // Uncomment this line if you want to read from a file
+        In.open("public/sample.in");
+        
+        int t = In.readInt();
+        for (int i = 0; i < t; i++) {
+            testCase();
+        }
+        
+        // Uncomment this line if you want to read from a file
+        In.close();
+    }
+
+    public static void testCase() {
+      //Input using In.java class
+      //Initialise Graph
+      int n = In.readInt();
+      int m = In.readInt();
+      int r = In.readInt();
+        
+      ArrayList<ArrayList<Integer>> graph = new ArrayList<ArrayList<Integer>>();
+        for (int i=0; i<n; i++){
+          graph.add(new ArrayList<Integer>());
+        }
+        
+      for (int i=0; i<m; i++){
+        int u = In.readInt();
+        int v = In.readInt();
+          
+        graph.get(u).add(v);
+        graph.get(v).add(u);
+        }
+      
+      //Coloring  
+      int[] colors = new int[n];
+      for (int i=0; i<n; i++ ){
+        colors[i] = -1;
+      }
+      
+      LinkedList<Integer> queue = new LinkedList<Integer>();
+      
+      queue.add(r);
+      //BF gets color 0
+      colors[r] = 0;
+      
+      while (queue.size() != 0){
+        int curr = queue.poll();
+        //for each neighbor of current
+        for (int neighbor : graph.get(curr)){
+          //if neighbor has same color as current -> no bipartite graph possible, abort
+          if (colors[neighbor] == colors[curr]){
+            System.out.println("no");
+            return;
+          }
+          //if neighbor is not yet colored, color it with diff color from curr
+          if (colors[neighbor]==-1){
+            colors[neighbor]= 1-colors[curr];
+            queue.add(neighbor);
+          }
+        }
+      }
+      
+      // Output all the vertices in the same colour class as the root r
+      for (int i=0; i<n; i++){
+        if (colors[i]==colors[r]){
+          Out.print(i + " ");
+        }
+      }
+      Out.println();
+    }
+}
