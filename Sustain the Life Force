@@ -1,0 +1,59 @@
+class Main {
+    public static void main(String[] args) {
+        // Uncomment this line if you want to read from a file
+        // In.open("public/sample.in");
+        // Out.compareTo("public/sample.out");
+        
+        int t = In.readInt();
+        for (int i = 0; i < t; i++) {
+            testCase();
+        }
+        
+        // Uncomment this line if you want to read from a file
+        // In.close();
+    }
+
+    public static void testCase() {
+        // Input using In.java class
+        int planets = In.readInt();
+        int relations = In.readInt();
+        
+        //Initialize graph with (2*planets)+s+t
+        int vertices = (2*planets)+2;
+        Algorithms.Graph g = new Algorithms.Graph(vertices);
+        
+        //Add edges from s to planets, and from planets to their duplicates, keep track of total plant needs to compare with final max flow
+        //Store planet needs in array for next loop
+        int totalNeedsPlants =0;
+        int[] planetNeeds = new int[planets];
+        for (int i=0; i<planets; i++) {
+          int hasPlants = In.readInt();
+          int needsPlants = In.readInt();
+          planetNeeds[i] = needsPlants;
+          totalNeedsPlants += needsPlants;
+          g.addEdge(0, i+1, hasPlants);
+          g.addEdge(i+1, i+1+planets, needsPlants);
+        }
+        
+         //Add edges from planet u to planet v duplicates which have a relation, cap = needs of planet v
+         for (int i=0; i<relations; i++) {
+          int fromPlanet = In.readInt();
+          int toPlanet = In.readInt();
+           g.addEdge(fromPlanet+1, toPlanet+1+planets, planetNeeds[toPlanet]);
+         }
+         
+         //Add edges from planet duplicates to sink, cap = needs
+         for (int i=0; i<planets; i++) {
+          g.addEdge(i+1+planets, vertices-1, planetNeeds[i]);
+         }
+        
+        if (totalNeedsPlants == g.computeMaximumFlow(0, vertices-1)){
+          Out.println("yes");
+        }
+        else {
+          Out.println("no");
+        }
+        // Output using Out.java class
+        //Out.println(n + n);
+    }
+}
