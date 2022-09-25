@@ -1,0 +1,115 @@
+class Main {
+  static double[] dice_n;
+  static double[] dice_m;
+  
+    public static void main(String[] args) {
+        // Uncomment this line if you want to read from a file
+        //In.open("public/sample.in");
+        In.open("public/custom.in");
+        int t = In.readInt();
+        for (int i = 0; i < t; i++) {
+            testCase();
+        }
+        
+        // Uncomment this line if you want to read from a file
+        In.close();
+    }
+    
+    public static double solve1(double n, double m, double[] dice_n, double[] dice_m){
+      //find expected value of dice n
+      double sum_n=0;
+      for(int i=0; i<n; i++){
+        sum_n+=(1/n)*dice_n[i];
+      }
+      
+      //find expected value of dice m
+      double sum_m=0;
+      for(int i=0; i<m; i++){
+        sum_m+=(1/m)*dice_m[i];
+      }
+      
+      //sum expected values
+      double sum_total = sum_n + sum_m;
+      return sum_total;
+    }
+    
+    public static double solve2(double x, double y, double n, double m, double[] dice_n, double[] dice_m){
+      double counter_n=0;
+      double counter_m=0;
+      for (int i=0; i<n; i++){
+        if(dice_n[i]<y){
+          double diff = x-dice_n[i];
+          counter_n++;
+          for (int j=0; j<m; j++){
+            if (dice_m[j]>diff){
+              counter_m++;
+            }
+          }
+        }
+      }
+      double prob = ((1/counter_n)*(1/m))*counter_m;
+      return prob;
+    }
+    
+    public static double solve3(double z, double n, double m, double[] dice_n, double[] dice_m) {
+      double count = 0.0;
+      double sum = 0.0;
+      double expectedval_n = 0.0;
+      for (int i=0; i<n; i++){
+        if (dice_n[i]<z){
+          count++;
+          sum += dice_n[i];
+        }
+      }
+      
+      //if count = 0, then there are no values smaller than five so expected val of n is zero
+      if (count == 0.0){
+        expectedval_n = 0.0;
+      }
+      else {
+        expectedval_n = sum/count;
+      }
+      
+      double expectedval_m = 0.0;
+      for(int i=0; i<m; i++){
+        expectedval_m +=(1.0/m)*dice_m[i];
+      }
+      
+     double expectedval_final = expectedval_n + expectedval_m;
+    return expectedval_final;
+    } 
+
+    public static void testCase() {
+        // Input using In.java class
+        //Read input n,m
+        double n = In.readDouble();
+        double m = In.readDouble();
+        
+        //Initialize dice arrays
+        dice_n = new double[(int)n];
+        dice_m = new double[(int)m];
+        
+        for (int i = 0; i < n; i++) {
+            dice_n[i] = In.readDouble();
+        }
+        
+        for (int i = 0; i < m; i++) {
+            dice_m[i] = In.readDouble();
+        }
+        
+        double x = In.readDouble();
+        double y = In.readDouble();
+        double z = In.readDouble();
+        
+        Out.print(solve1(n, m, dice_n, dice_m));
+        Out.print(" ");
+        Out.print(solve2(x, y, n, m, dice_n, dice_m));
+        Out.print(" ");
+        Out.println(solve3(z, n, m, dice_n, dice_m));
+        
+        
+      
+        // Output using Out.java class
+        //Out.println(n + n);
+    }
+}
