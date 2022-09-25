@@ -1,0 +1,63 @@
+class Main {
+  static double DP[][];
+  static double[] probs;
+  static int n;
+  static int m;
+  
+    public static void main(String[] args) {
+        // Uncomment this line if you want to read from a file
+        In.open("public/sample.in");
+        //Out.compareTo("public/sample.out");
+        
+        int t = In.readInt();
+        for (int i = 0; i < t; i++) {
+            testCase();
+        }
+        
+        // Uncomment this line if you want to read from a file
+        In.close();
+    }
+    
+    public static double solve(int player, int message){
+      //Base case: if player = 0, return 0(gone too low)
+      if (player==0){
+        return 0.0;
+      }
+      
+      //Base case: if start player with wrong message return 0 (we dont want this outcome)
+      if(player==1 && message != m){
+        return 0.0;
+      }
+      
+       if(player==1 && message == m){
+        return 1.0;
+      }
+
+      //Memoization
+      if(DP[player][message] != -1.0) {
+        return DP[player][message];
+      }
+      
+      DP[player][message] = (probs[player-1]*solve(player-1, 1-message)) + ((1-probs[player-1])*solve(player-1, message));
+      return DP[player][message];
+    } 
+
+    public static void testCase() {
+        // Input using In.java class
+        n = In.readInt();
+        m = In.readInt();
+        probs = new double[n+1];
+        for (int i=1; i<=n; i++) {
+          probs[i] = In.readDouble();
+        }
+        DP = new double[n+2][2];
+        for (int i=0;i<n+2;i++){
+          for(int j=0;j<2;j++){
+            DP[i][j]=-1.0;
+          } 
+        }
+        
+        // Output using Out.java class
+        Out.println(solve(n+1,m));
+    }
+}
