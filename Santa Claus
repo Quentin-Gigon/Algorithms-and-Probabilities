@@ -1,0 +1,69 @@
+class Main {
+    public static void main(String[] args) {
+        // Uncomment this line if you want to read from a file
+        // In.open("public/sample.in");
+        // Out.compareTo("public/sample.out");
+        
+        int t = In.readInt();
+        for (int i = 0; i < t; i++) {
+            testCase();
+        }
+        
+        // Uncomment this line if you want to read from a file
+        In.close();
+    }
+
+    public static void testCase() {
+        // Input using In.java class
+        int children = In.readInt();
+        int types = In.readInt();
+        
+        //Graph has 2 vertices (source + sink) + vertices representing children + vertices representing types
+        int numVertices = 2 + children + types;
+        
+        //define source vertex and sink vertex
+        int source = 0; 
+        int sink = numVertices-1;
+        
+        //Initialize graph
+        Algorithms.Graph g = new Algorithms.Graph(numVertices);
+        
+        //keep track of total number toys deserved, should be equal max flow at the end
+        int totalToysDeserved =0;
+        
+        //add edge from child i to sink, with capacity corresponding to toys deserved by child i
+        for (int i=0;i<children;i++) {
+          int toysDeserved = In.readInt();
+          totalToysDeserved += toysDeserved;
+          g.addEdge(types+1+i, sink, toysDeserved);
+        }
+        
+        //add edge from source to toy type i, with capacity corresponding to toys available for type i
+        for (int i=0;i<types;i++) {
+          int toysAvailable = In.readInt();
+          g.addEdge(source, 1+i, toysAvailable);
+        }
+        
+        //add edge for each toy type to each child with capacity 1, a flow would mean child gets toy
+        for (int i=0;i<types;i++) {
+          for (int j=0;j<children;j++) {
+            g.addEdge(1+i, types+1+j, 1);
+          }
+        }
+        //calculate max flow
+        int maxFlow = g.computeMaximumFlow(source, sink);
+        
+        if(maxFlow==totalToysDeserved){
+          Out.println("yes");
+        }
+        else{
+          Out.println("no");
+        }
+        
+        
+    
+        
+        // Output using Out.java class
+        //Out.println(n + n);
+    }
+}
